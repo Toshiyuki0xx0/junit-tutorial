@@ -1,4 +1,6 @@
 package junit.tutorial;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -19,11 +21,20 @@ public class IsDate extends BaseMatcher<Date>{
 	public boolean matches(Object actual) {
 		this.actual = actual;
 		if (!(actual instanceof Date)) return false;
-		
-		return false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime((Date)actual);
+		if (yyyy != cal.get(Calendar.YEAR)) return false;
+		if (mm != cal.get(Calendar.MONTH)+1) return false;
+		if (dd != cal.get(Calendar.DATE)) return false;
+		return true;
 	}
 	@Override
 	public void describeTo(Description desc) {
+		desc.appendValue(yyyy + "/" + String.format("%02d", mm)  + "/" + String.format("%02d", dd));
+		if (actual != null) {
+			desc.appendText(" but actual is ");
+			desc.appendValue(new SimpleDateFormat("yyyy/MM/dd").format((Date)actual));
+		}
 		
 	}
 	
